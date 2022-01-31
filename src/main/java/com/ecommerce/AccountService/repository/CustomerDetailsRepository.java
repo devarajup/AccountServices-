@@ -6,11 +6,10 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
     @Repository
-public interface CustomerDetailsRepository extends JpaRepository<CustomerDetailsEntity,Integer> {
+public interface CustomerDetailsRepository extends JpaRepository<CustomerDetailsEntity, String> {
 
 
     CustomerDetailsEntity findByEmail(String email);
-//    @Query("select customer from CustomerDetailsEntity customer where username=:username or mobileNumber=:mobileNumber or email=:email")
+    //@Query("select customer from CustomerDetailsEntity customer where username=:username or mobileNumber=:mobileNumber or email=:email")
     Optional<CustomerDetailsEntity> findByMobileNumberOrEmail(String mobileNumber, String email);
-
 }

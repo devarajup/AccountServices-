@@ -29,7 +29,11 @@ public class CustomerDetailsService {
         if (!customerDetailsRepository.findByMobileNumberOrEmail(model.getMobileNumber(), model.getEmail()).isPresent()) {
             model.setPassword(encoder.encode(model.getPassword()));
             CustomerDetailsEntity entity = customerDetailsRepository.save(getEntity(model));
-            return entity.getFirstName() + " " + entity.getLastName() + " is saved with EMail Id: " + entity.getEmail();
+
+            return "Customer Details saved Successfully" +
+                    "\n\tCustomer ID\t:"+entity.getCustomerId()+
+                    "\n\tFull Name\t:"+entity.getFirstName() + " " + entity.getLastName() +
+                    "\n\tEMail ID\t:" + entity.getEmail();
         }
 
         return "Duplicate not allowed";

@@ -1,8 +1,11 @@
 package com.ecommerce.AccountService.entity;
 
+import com.ecommerce.AccountService.util.CustomCustomerIdGenerator;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import  org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.List;
@@ -16,16 +19,25 @@ public class CustomerDetailsEntity {
 
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private  Integer id;
-    private String firstName;
-    private  String lastName;
+    @GenericGenerator(name = "customer_id_gen",
+            strategy = "com.ecommerce.AccountService.util.CustomCustomerIdGenerator",
+            parameters = {
+            @Parameter(name = CustomCustomerIdGenerator.VALUE_PREFIX_PARAMETER, value = "CID"),
+            @Parameter(name = CustomCustomerIdGenerator.NUMBER_FORMAT_PARAMETER, value = "%03d") }
+    )
+    @GeneratedValue(generator = "customer_id_gen",strategy = GenerationType.IDENTITY)
 
-    @Column(unique=true)
-    private  String email ;
-    @Column(unique=true)
-    private String  mobileNumber;
-    private  String  password;
+
+    //    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private String CustomerId;
+    private String firstName;
+    private String lastName;
+
+    @Column(unique = true)
+    private String email;
+    @Column(unique = true)
+    private String mobileNumber;
+    private String password;
 
     @OneToMany(mappedBy = "customerDetailsEntity")
     private List<CustomerAddressEntity> customerAddressEntityList;
