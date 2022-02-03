@@ -7,6 +7,7 @@ import com.ecommerce.AccountService.model.UserResponse;
 import com.ecommerce.AccountService.service.CustomerDetailsService;
 import com.ecommerce.AccountService.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,8 +29,9 @@ public class CustomerRestController {
     private JwtUtil util;
 
     @PostMapping("/add-customer")
-    public String addCustomerDeatails(@Valid @RequestBody CustomerDetailsModel model)  {
-        return customerDetailsService.addCustomerDeatails(model);
+    public ResponseEntity<String> addCustomerDeatails(@Valid @RequestBody CustomerDetailsModel model)  {
+        return   customerDetailsService.addCustomerDeatails(model);
+
     }
 
     @PostMapping("/add-customer-address")

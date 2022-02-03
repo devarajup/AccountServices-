@@ -1,15 +1,22 @@
 package com.ecommerce.AccountService.service;
 
+import com.ecommerce.AccountService.CustomizedExceptionHandling.CustomizedExceptionHandling;
+import com.ecommerce.AccountService.CustomizedExceptionHandling.Exceptions.DuplicateException;
+import com.ecommerce.AccountService.CustomizedExceptionHandling.Exceptions.UserNotFondException;
 import com.ecommerce.AccountService.entity.CustomerAddressEntity;
 import com.ecommerce.AccountService.entity.CustomerDetailsEntity;
 import com.ecommerce.AccountService.model.CustomerAddressModel;
 import com.ecommerce.AccountService.model.CustomerDetailsModel;
+import com.ecommerce.AccountService.model.ExceptionResponse;
 import com.ecommerce.AccountService.repository.CustomerAddressRepository;
 import com.ecommerce.AccountService.repository.CustomerDetailsRepository;
 import com.ecommerce.AccountService.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,18 +32,24 @@ public class CustomerDetailsService {
     @Autowired
     private JwtUtil util;
 
-    public String addCustomerDeatails(CustomerDetailsModel model) {
-        if (!customerDetailsRepository.findByMobileNumberOrEmail(model.getMobileNumber(), model.getEmail()).isPresent()) {
-            model.setPassword(encoder.encode(model.getPassword()));
+    public ResponseEntity<String> addCustomerDeatails(CustomerDetailsModel model) {
+       try {
+           model.setPassword(encoder.encode(model.getPassword()));
+
             CustomerDetailsEntity entity = customerDetailsRepository.save(getEntity(model));
 
-            return "Customer Details saved Successfully" +
+            String body =  "Customer Details saved Successfully" +
                     "\n\tCustomer ID\t:"+entity.getCustomerId()+
                     "\n\tFull Name\t:"+entity.getFirstName() + " " + entity.getLastName() +
                     "\n\tEMail ID\t:" + entity.getEmail();
-        }
+            return new ResponseEntity<String>(
+                    body,
+                    HttpStatus.CREATED);
+    } catch (Exception e) {
+           throw new DuplicateException("Duplicate Not allowed");
+       }
 
-        return "Duplicate not allowed";
+
     }
 
 
