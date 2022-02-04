@@ -123,4 +123,8 @@ public class CustomerDetailsService {
                 addressModels);
 
     }
+
+    public String getEmailByToken(String token) {
+        return util.getUserName(token);
+    }
 }

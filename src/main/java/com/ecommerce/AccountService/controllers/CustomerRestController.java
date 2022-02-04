@@ -60,11 +60,17 @@ public class CustomerRestController {
         );
 
         String token = util.generateToken(userRequest.getEmail());
-        return ResponseEntity.ok(new UserResponse(token, "GENERATED  SUCCESSFULLY"));
+        return ResponseEntity.ok(new UserResponse(token));
     }
 
     @PostMapping("/home")
     public ResponseEntity<String> securedResource() {
         return ResponseEntity.ok("WELCOME TO SECURED RESOURCE AFTER LOGIN!");
+    }
+
+    @GetMapping("/get-mail")
+    public  String getMail(@RequestParam("token") String token ){
+
+        return customerDetailsService.getEmailByToken(token);
     }
 }

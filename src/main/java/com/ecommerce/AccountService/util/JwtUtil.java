@@ -20,7 +20,7 @@ public class JwtUtil {
                 .setSubject(subject)
                 .setIssuer("DEVARAJU")
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(5)))
+                .setExpiration(new Date(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(20)))
                 .signWith(SignatureAlgorithm.HS512, secret.getBytes())
                 .compact();
     }
