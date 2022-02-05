@@ -1,6 +1,7 @@
 package com.ecommerce.AccountService.entity;
 
 import com.ecommerce.AccountService.util.CustomCustomerIdGenerator;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -38,7 +39,7 @@ public class CustomerDetailsEntity {
     @Column(unique = true)
     private String mobileNumber;
     private String password;
-
+    @JsonManagedReference
     @OneToMany(mappedBy = "customerDetailsEntity")
     private List<CustomerAddressEntity> customerAddressEntityList;
 

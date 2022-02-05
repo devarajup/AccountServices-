@@ -1,5 +1,6 @@
 package com.ecommerce.AccountService.util;
 
+import com.ecommerce.AccountService.CustomizedExceptionHandling.Exceptions.LoginException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -25,7 +26,7 @@ public class JwtUtil {
                 .compact();
     }
 
-    public Claims getClaims(String token) {
+    public Claims getClaims(String token) throws LoginException {
         return Jwts.parser()
                 .setSigningKey(secret.getBytes())
                 .parseClaimsJws(token).getBody();

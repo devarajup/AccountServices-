@@ -1,6 +1,7 @@
 package com.ecommerce.AccountService.entity;
 
 import com.ecommerce.AccountService.util.CustomCustomerIdGenerator;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

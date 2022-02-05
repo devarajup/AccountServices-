@@ -1,13 +1,11 @@
 package com.ecommerce.AccountService.service;
 
-import com.ecommerce.AccountService.CustomizedExceptionHandling.CustomizedExceptionHandling;
 import com.ecommerce.AccountService.CustomizedExceptionHandling.Exceptions.DuplicateException;
 import com.ecommerce.AccountService.CustomizedExceptionHandling.Exceptions.UserNotFondException;
 import com.ecommerce.AccountService.entity.CustomerAddressEntity;
 import com.ecommerce.AccountService.entity.CustomerDetailsEntity;
 import com.ecommerce.AccountService.model.CustomerAddressModel;
 import com.ecommerce.AccountService.model.CustomerDetailsModel;
-import com.ecommerce.AccountService.model.ExceptionResponse;
 import com.ecommerce.AccountService.repository.CustomerAddressRepository;
 import com.ecommerce.AccountService.repository.CustomerDetailsRepository;
 import com.ecommerce.AccountService.util.JwtUtil;
@@ -16,9 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,29 +44,41 @@ public class CustomerDetailsService {
                     body,
                     HttpStatus.CREATED);
     } catch (Exception e) {
-           throw new DuplicateException("Duplicate Not allowed");
+           throw new DuplicateException(model.getEmail()+" "+model.getMobileNumber() +" Duplicate Not allowed");
        }
 
 
     }
 
 
-    public String addAddressToCustomer(String Authorization, CustomerAddressModel model) {
+    public ResponseEntity<String> addAddressToCustomer(String Authorization, CustomerAddressModel model){
         String emailId = util.getUserName(Authorization);
         System.out.println(emailId);
-        if (customerDetailsRepository.findByEmail(emailId) != null) {
+        if (customerDetailsRepository.findByEmail(emailId).get() != null) {
             CustomerAddressEntity customerAddressEntity = getCustomerAddressEntity(model);
-            customerAddressEntity.setCustomerDetailsEntity(customerDetailsRepository.findByEmail(emailId));
+            customerAddressEntity.setCustomerDetailsEntity(customerDetailsRepository.findByEmail(emailId).get());
             customerAddressRepository.save(customerAddressEntity);
+            return new ResponseEntity<String>("address be added to  customer ID " + emailId,HttpStatus.ACCEPTED) ;
+
         }
-        return "address be added to  customer ID " + emailId;
+        return new ResponseEntity<String>(HttpStatus.EXPECTATION_FAILED);
     }
 
     public CustomerDetailsModel getFullCustomerDetails(String authorization) {
-        return getModelx(customerDetailsRepository.findByEmail(util.getUserName(authorization)));
+        return getModelx(customerDetailsRepository.findByEmail(util.getUserName(authorization)).get());
 
     }
+public CustomerAddressModel getAddress(String email) {
+    System.out.println(email);
+      try {
+          Optional<CustomerDetailsEntity> entity = customerDetailsRepository.findByEmail(email) ;
 
+
+     CustomerAddressEntity addressEntity =  customerAddressRepository.getCustomerAddress(entity.get().getCustomerId()).get(1);
+        return getCustomerAddressModel(addressEntity); }catch (Exception ex){
+          throw  new UserNotFondException(email+" Not found  in database");
+      }
+}
 
     private static CustomerAddressEntity getCustomerAddressEntity(CustomerAddressModel model) {
         return new CustomerAddressEntity(model.getCode(),

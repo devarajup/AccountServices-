@@ -1,12 +1,15 @@
 package com.ecommerce.AccountService.CustomizedExceptionHandling;
 
 import com.ecommerce.AccountService.CustomizedExceptionHandling.Exceptions.DuplicateException;
+import com.ecommerce.AccountService.CustomizedExceptionHandling.Exceptions.LoginException;
 import com.ecommerce.AccountService.CustomizedExceptionHandling.Exceptions.UserNotFondException;
 import com.ecommerce.AccountService.model.ExceptionResponse;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -21,7 +24,7 @@ public class CustomizedExceptionHandling extends ResponseEntityExceptionHandler 
         response.setDateTime(LocalDateTime.now());
         response.setMessage(exception.getMessage());
         System.out.println(response.getMessage());
-        return     new ResponseEntity<ExceptionResponse>(response, HttpStatus.BAD_REQUEST);
+        return     new ResponseEntity<ExceptionResponse>(response, HttpStatus.NOT_FOUND);
     }
     @ExceptionHandler(DuplicateException.class)
     public ResponseEntity<ExceptionResponse> duplicateHandleExceptions(Exception exception, WebRequest webRequest) {
@@ -30,6 +33,14 @@ public class CustomizedExceptionHandling extends ResponseEntityExceptionHandler 
         response.setMessage(exception.getMessage());
         System.out.println(response.getMessage());
         return     new ResponseEntity<ExceptionResponse>(response, HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+    @ExceptionHandler(LoginException.class)
+    public ResponseEntity<ExceptionResponse> loginHandleExceptions(Exception exception, WebRequest webRequest) {
+        ExceptionResponse response = new ExceptionResponse();
+        response.setDateTime(LocalDateTime.now());
+        response.setMessage(exception.getMessage());
+        System.out.println(response.getMessage());
+        return     new ResponseEntity<ExceptionResponse>(response, HttpStatus.UNAUTHORIZED);
     }
 
 

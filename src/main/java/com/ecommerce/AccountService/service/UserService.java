@@ -18,7 +18,7 @@ public class UserService implements UserDetailsService {
     private CustomerDetailsRepository repo;
 
     public CustomerDetailsEntity findByEmailId(String emailId) {
-        return repo.findByEmail(emailId);
+        return repo.findByEmail(emailId).get();
     }
 
     public UserDetails loadUserByUsername(String emailId) {

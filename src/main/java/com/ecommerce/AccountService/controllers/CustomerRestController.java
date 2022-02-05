@@ -15,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @Validated
@@ -35,7 +36,7 @@ public class CustomerRestController {
     }
 
     @PostMapping("/add-customer-address")
-    public String addAdressToCustomer(@RequestHeader(
+    public ResponseEntity<String>  addAdressToCustomer(@RequestHeader(
             value = "Authorization",
             required = true)   String authorization, @RequestBody CustomerAddressModel model) {
         return customerDetailsService.addAddressToCustomer(authorization, model);
@@ -73,4 +74,10 @@ public class CustomerRestController {
 
         return customerDetailsService.getEmailByToken(token);
     }
+    @GetMapping("/get-address/{email}")
+    public CustomerAddressModel getAddress(@PathVariable("email") String email ){
+
+        return customerDetailsService.getAddress(email);
+    }
+
 }
